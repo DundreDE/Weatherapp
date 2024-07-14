@@ -8,15 +8,19 @@
 </head>
 <body>
     <header>
-        <div class="container" id="container">
-            <nav class="buttons">
+        <div class="container">
+            <h1>Wettervorhersage</h1>
+            <div id="weather-info" class="location-info"></div>
+            <div id="forecast-info" class="forecast-info">
+                <table id="forecast-table" class="table"></table>
+            </div>
+            <div id="buttons-container">
                 <button id="hourly-button" class="button">Stündlich</button>
                 <button id="daily-button" class="button">Täglich</button>
-            </nav>
-            <h1>Wettervorhersage</h1>
-            <div class="weather-info" id="weather-info"></div>
-            <div class="forecast-info" id="forecast-info"></div>
+                <button id="dark-mode-button" class="button">Dark/Light Mode</button>
+            </div>
         </div>
+        
     </header>
     <script src="script.js"></script>
 </body>

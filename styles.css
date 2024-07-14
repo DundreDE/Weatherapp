@@ -19,6 +19,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 600px; /* Beispiel: Begrenzung der Breite */
     margin: 20px;
+    transition: background-color 0.3s ease; /* Übergang für Hintergrundfarbe */
 }
 
 h1 {
@@ -31,13 +32,15 @@ h1 {
     margin-bottom: 10px;
 }
 
-.weather-info, .forecast-info {
+.weather-info,
+.forecast-info {
     margin-top: 20px;
     font-size: 1.2em;
     margin-bottom: 20px;
 }
 
-.weather-info p, .forecast-info p {
+.weather-info p,
+.forecast-info p {
     margin: 15px 0; /* Größerer Abstand zwischen den Absätzen */
 }
 
@@ -73,58 +76,93 @@ h1 {
 }
 
 /* Hintergrundfarben basierend auf dem Wetter */
-body.clear-sky {
+.body-background.clear-sky {
     background: linear-gradient(to right, #4facfe, #00f2fe);
 }
 
-body.mostly-clear {
+.body-background.mostly-clear {
     background: linear-gradient(to right, #72c6ef, #004e8f);
 }
 
-body.partly-cloudy {
+.body-background.partly-cloudy {
     background: linear-gradient(to right, #d7d2cc, #304352);
 }
 
-body.cloudy {
+.body-background.cloudy {
     background: linear-gradient(to right, #757f9a, #d7dde8);
 }
 
-body.foggy {
+.body-background.foggy {
     background: linear-gradient(to right, #bdc3c7, #2c3e50);
 }
 
-body.drizzle {
+.body-background.drizzle {
     background: linear-gradient(to right, #4b79a1, #283e51);
 }
 
-body.freezing-drizzle {
+.body-background.freezing-drizzle {
     background: linear-gradient(to right, #83a4d4, #b6fbff);
 }
 
-body.rain {
+.body-background.rain {
     background: linear-gradient(to right, #4ca1af, #c4e0e5);
 }
 
-body.freezing-rain {
+.body-background.freezing-rain {
     background: linear-gradient(to right, #bdc3c7, #2c3e50);
 }
 
-body.snow {
+.body-background.snow {
     background: linear-gradient(to right, #e6dada, #274046);
 }
 
-body.rain-shower {
+.body-background.rain-shower {
     background: linear-gradient(to right, #2980b9, #6dd5fa);
 }
 
-body.snow-shower {
+.body-background.snow-shower {
     background: linear-gradient(to right, #bdc3c7, #2c3e50);
 }
 
-body.thunderstorm {
+.body-background.thunderstorm {
     background: linear-gradient(to right, #373b44, #4286f4);
 }
 
-body.default {
+.body-background.default {
     background: linear-gradient(to right, #6dd5fa, #ffffff);
+}
+
+/* Dark Mode Styles für spezifische Elemente */
+.dark-mode .container {
+    background: rgba(0, 0, 0, 0.8); /* Dunkler Hintergrund für Container */
+    color: #fff; /* Weiße Textfarbe für dunklen Hintergrund */
+}
+
+.dark-mode .button.active,
+.dark-mode .button {
+    background-color: #333; /* Dunklere Hintergrundfarbe für Buttons im Dark Mode */
+    color: white; /* Weiße Textfarbe für dunklen Hintergrund */
+}
+
+/* Tabellenstil */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th,
+.table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: center;
+}
+
+.table td {
+    text-align: center;
 }

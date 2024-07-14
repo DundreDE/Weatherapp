@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const hourlyButton = document.getElementById('hourly-button');
     const dailyButton = document.getElementById('daily-button');
+    const darkModeButton = document.getElementById('dark-mode-button');
     const weatherInfoDiv = document.getElementById('weather-info');
     const forecastInfoDiv = document.getElementById('forecast-info');
 
@@ -11,6 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!dailyButton) {
         console.error("Täglich-Button nicht gefunden.");
+        return;
+    }
+
+    if (!darkModeButton) {
+        console.error("Dark Mode-Button nicht gefunden.");
         return;
     }
 
@@ -26,9 +32,20 @@ document.addEventListener("DOMContentLoaded", () => {
         getDailyForecast();
     });
 
+    darkModeButton.addEventListener('click', () => {
+        toggleDarkMode();
+    });
+
     // Standardmäßig stündliche Vorhersage anzeigen
     hourlyButton.classList.add('active');
     getHourlyForecast();
+
+    // Beim Laden der Seite Dark Mode Zustand wiederherstellen
+    const isDarkModeEnabled = localStorage.getItem('darkModeEnabled') === 'true';
+    const body = document.body;
+    if (isDarkModeEnabled) {
+        body.classList.add('dark-mode');
+    }
 
     function clearActiveButton() {
         hourlyButton.classList.remove('active');
@@ -165,15 +182,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.hourly && Array.isArray(data.hourly.time)) {
                     const hourlyForecast = data.hourly;
                     const currentHour = new Date().getHours();
-                    const hourlyInfo = hourlyForecast.time.slice(0, 24).map((time, index) => {
-                        const hour = (currentHour + index) % 24; // Berechne die Stunde
-                        const temperature = hourlyForecast.temperature_2m[index];
-                        const weatherCode = hourlyForecast.weathercode[index];
-                        const description = getWeatherDescription(weatherCode);
-                        return `<p>${hour}:00 - ${temperature}°C - ${description}</p>`;
-                    }).join('');
-
-                    forecastInfoDiv.innerHTML = `<h2>Stündliche Vorhersage</h2>${hourlyInfo}`;
+                    const forecastTable = document.getElementById('forecast-table');
+                    forecastTable.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Zeit</th>
+                                <th>Temperatur (°C)</th>
+                                <th>Wetter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${hourlyForecast.time.slice(0, 24).map((time, index) => {
+                                const hour = (currentHour + index) % 24; // Berechne die Stunde
+                                const temperature = hourlyForecast.temperature_2m[index];
+                                const weatherCode = hourlyForecast.weathercode[index];
+                                const description = getWeatherDescription(weatherCode);
+                                return `
+                                    <tr>
+                                        <td>${hour}:00</td>
+                                        <td>${temperature}</td>
+                                        <td>${description}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    `;
                 } else {
                     console.error('Die zurückgegebenen stündlichen Daten haben keine erwartete Array-Struktur:', data);
                 }
@@ -197,16 +230,34 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 if (data.daily && Array.isArray(data.daily.time)) {
                     const dailyForecast = data.daily;
-                    const dailyInfo = dailyForecast.time.slice(0, 7).map((date, index) => {
-                        const day = new Date(date).toLocaleDateString('de-DE', { weekday: 'long' });
-                        const maxTemp = dailyForecast.temperature_2m_max[index];
-                        const minTemp = dailyForecast.temperature_2m_min[index];
-                        const weatherCode = dailyForecast.weathercode[index];
-                        const description = getWeatherDescription(weatherCode);
-                        return `<p>${day} - Max: ${maxTemp}°C, Min: ${minTemp}°C - ${description}</p>`;
-                    }).join('');
-
-                    forecastInfoDiv.innerHTML = `<h2>Tägliche Vorhersage</h2>${dailyInfo}`;
+                    const forecastTable = document.getElementById('forecast-table');
+                    forecastTable.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Max. Temperatur (°C)</th>
+                                <th>Min. Temperatur (°C)</th>
+                                <th>Wetter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${dailyForecast.time.slice(0, 7).map((date, index) => {
+                                const day = new Date(date).toLocaleDateString('de-DE', { weekday: 'long' });
+                                const maxTemp = dailyForecast.temperature_2m_max[index];
+                                const minTemp = dailyForecast.temperature_2m_min[index];
+                                const weatherCode = dailyForecast.weathercode[index];
+                                const description = getWeatherDescription(weatherCode);
+                                return `
+                                    <tr>
+                                        <td>${day}</td>
+                                        <td>${maxTemp}</td>
+                                        <td>${minTemp}</td>
+                                        <td>${description}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    `;
                 } else {
                     console.error('Die zurückgegebenen täglichen Daten haben keine erwartete Array-Struktur:', data);
                 }
@@ -214,6 +265,14 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error('Fehler beim Abrufen der täglichen Wetterdaten: ', error));
     }
 
-    getWeather(); // Zeige das aktuelle Wetter an beim Laden der Seite
+    function toggleDarkMode() {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const isDarkModeEnabled = body.classList.contains('dark-mode');
+        localStorage.setItem('darkModeEnabled', isDarkModeEnabled);
+    }
+
+    // Wetterdaten beim Laden der Seite abrufen
+    getWeather();
 });
 
